@@ -395,9 +395,9 @@ export default function SignStarCockpit({ initialData, session }) {
   };
 
   return (
-    <div className={`flex flex-col lg:flex-row h-screen bg-[#F4F7F9] text-slate-700 font-sans transition-all duration-500 ${viewMode === 'director' ? 'director-theme' : 'production-theme'}`}>
+    <div className={`flex flex-col lg:flex-row h-screen bg-[#F4F7F9] text-slate-700 font-sans transition-all duration-500 pb-16 lg:pb-0 ${viewMode === 'director' ? 'director-theme' : 'production-theme'}`}>
       {/* Sidebar Navigation */}
-      <aside className="w-full lg:w-64 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex lg:flex-col shrink-0 overflow-x-auto lg:overflow-visible">
+      <aside className="hidden lg:flex w-full lg:w-64 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex-col shrink-0 overflow-x-auto lg:overflow-visible">
         <div className="p-4 lg:p-6 flex items-center justify-between lg:justify-start lg:block w-full">
           <Image src="/logo.png" alt="Logo" width={160} height={40} className="object-contain" />
         </div>
@@ -427,6 +427,15 @@ export default function SignStarCockpit({ initialData, session }) {
           </div>
         </div>
       </aside>
+      
+      {/* Mobile Bottom Navigation */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-200 flex justify-around items-center h-16 z-50 px-2 pb-safe shadow-2xl">
+        <NavItemMobile icon={<Calendar size={20} />} label="計" active={activeCategory === 'all'} onClick={() => setActiveCategory('all')} />
+        <NavItemMobile icon={<Wrench size={20} />} label="現" active={activeCategory === 'general'} onClick={() => setActiveCategory('general')} />
+        <NavItemMobile icon={<CircleParking size={20} />} label="駐" active={activeCategory === 'parking'} onClick={() => setActiveCategory('parking')} />
+        <NavItemMobile icon={<Car size={20} />} label="車" active={activeCategory === 'vehicles'} onClick={() => setActiveCategory('vehicles')} />
+        <NavItemMobile icon={<Mail size={20} />} label="メ" badge={emails.length} active={activeCategory === 'messages'} onClick={() => setActiveCategory('messages')} />
+      </nav>
 
       {/* Main Container */}
       <div className="flex-1 flex flex-col overflow-hidden">
@@ -1110,6 +1119,28 @@ export default function SignStarCockpit({ initialData, session }) {
           --accent: #059669;
         }
       `}</style>
+    </div>
+  );
+}
+
+function NavItemMobile({ icon, label, active = false, badge = 0, onClick }) {
+  return (
+    <div 
+      onClick={onClick}
+      className={`flex flex-col items-center justify-center flex-1 h-full gap-1 cursor-pointer transition-all ${
+      active 
+      ? 'text-[#d71d1d]' 
+      : 'text-slate-400'
+    }`}>
+      <div className="relative">
+        {icon}
+        {badge > 0 && (
+          <span className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 text-white text-[8px] font-black flex items-center justify-center rounded-full border border-white">
+            {badge > 9 ? '9+' : badge}
+          </span>
+        )}
+      </div>
+      <span className="text-[10px] font-black">{label}</span>
     </div>
   );
 }
