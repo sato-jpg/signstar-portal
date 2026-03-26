@@ -1,0 +1,42 @@
+{
+  "name": "signstar-portal",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@fullcalendar/core": "^6.1.20",
+    "@fullcalendar/daygrid": "^6.1.20",
+    "@fullcalendar/interaction": "^6.1.20",
+    "@fullcalendar/react": "^6.1.20",
+    "@fullcalendar/resource": "^6.1.20",
+    "@fullcalendar/resource-daygrid": "^6.1.20",
+    "@fullcalendar/resource-timegrid": "^6.1.20",
+    "@fullcalendar/scrollgrid": "^6.1.20",
+    "@fullcalendar/timegrid": "^6.1.20",
+    "@notionhq/client": "^4.0.2",
+    "dotenv": "^17.3.1",
+    "googleapis": "^171.4.0",
+    "imap-simple": "^5.1.0",
+    "lucide-react": "^0.577.0",
+    "mailparser": "^3.9.4",
+    "next": "16.1.7",
+    "next-auth": "^5.0.0-beta.30",
+    "node-pop3": "^0.11.0",
+    "nodemailer": "^8.0.3",
+    "playwright-chromium": "^1.58.2",
+    "preact": "^10.29.0",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.7",
+    "tailwindcss": "^4"
+  }
+}

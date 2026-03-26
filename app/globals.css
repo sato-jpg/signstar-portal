@@ -1,0 +1,62 @@
+@import "tailwindcss";
+
+@import "tailwindcss";
+
+:root {
+  --background: #ffffff; /* 純白 */
+  --foreground: #333333; /* 視認性の高い濃いグレー */
+  --accent: #D13818; /* SignStarロゴの情熱的な赤 (Webサイト合わせ) */
+  --accent-light: #fff5f5; /* 薄い赤（背景用） */
+  --sidebar-bg: #f8fafc; /* 非常に薄いグレーのサイドバー */
+  --card-bg: #ffffff;
+  --card-border: #e2e8f0;
+}
+
+body {
+  background-color: var(--background);
+  color: var(--foreground);
+  font-family: "Noto Sans JP", sans-serif;
+  overflow: hidden;
+}
+
+/* クリーンなカードスタイル */
+.glass {
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 12px;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+}
+
+/* アクセントボタン */
+.btn-primary {
+  background-color: var(--accent);
+  color: white;
+  transition: all 0.2s ease-in-out;
+}
+.btn-primary:hover {
+  background-color: #b91c1c;
+  transform: translateY(-1px);
+}
+
+/* 洗練されたスクロールバー */
+.custom-scrollbar::-webkit-scrollbar { width: 5px; }
+.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
+.custom-scrollbar::-webkit-scrollbar-thumb { 
+  background: #e2e8f0; 
+  border-radius: 10px; 
+}
+.custom-scrollbar::-webkit-scrollbar-thumb:hover { 
+  background: #cbd5e1; 
+}
+
+/* シンプルなアニメーション */
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fade-in 0.4s ease-out forwards;
+}
+
+
