@@ -395,14 +395,14 @@ export default function SignStarCockpit({ initialData, session }) {
   };
 
   return (
-    <div className={`flex h-screen bg-[#F4F7F9] text-slate-700 font-sans transition-all duration-500 ${viewMode === 'director' ? 'director-theme' : 'production-theme'}`}>
+    <div className={`flex flex-col lg:flex-row h-screen bg-[#F4F7F9] text-slate-700 font-sans transition-all duration-500 ${viewMode === 'director' ? 'director-theme' : 'production-theme'}`}>
       {/* Sidebar Navigation */}
-      <aside className="w-20 lg:w-64 bg-white border-r border-slate-200 flex flex-col shrink-0">
-        <div className="p-6 flex justify-center lg:justify-start">
+      <aside className="w-full lg:w-64 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex lg:flex-col shrink-0 overflow-x-auto lg:overflow-visible">
+        <div className="p-4 lg:p-6 flex items-center justify-between lg:justify-start lg:block w-full">
           <Image src="/logo.png" alt="Logo" width={160} height={40} className="object-contain" />
         </div>
         
-        <nav className="flex-1 px-4 space-y-2">
+        <nav className="flex lg:flex-col px-4 items-center lg:items-stretch lg:space-y-2 gap-2 lg:gap-0 h-auto overflow-x-auto lg:overflow-visible">
           <NavItem icon={<LayoutDashboard size={20} />} label="スケジュール" active={activeCategory === 'all'} onClick={() => setActiveCategory('all')} />
           <NavItem icon={<Truck size={20} />} label="現場" active={activeCategory === 'general'} onClick={() => setActiveCategory('general')} />
           <NavItem icon={<MapPin size={20} />} label="パーキング" active={activeCategory === 'parking'} onClick={() => setActiveCategory('parking')} />
@@ -431,8 +431,8 @@ export default function SignStarCockpit({ initialData, session }) {
       {/* Main Container */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Top Header */}
-        <header className="h-16 bg-white border-b border-slate-200 flex items-center justify-between px-8 shrink-0">
-          <div className="flex items-center gap-4">
+        <header className="h-auto md:h-16 bg-white border-b border-slate-200 flex flex-col md:flex-row items-center justify-between px-4 md:px-8 py-4 md:py-0 shrink-0 gap-4">
+          <div className="flex items-center justify-between w-full md:w-auto gap-4">
             <h1 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
               SignStar <span className="text-[#d71d1d]">Cockpit</span>
             </h1>
@@ -490,7 +490,7 @@ export default function SignStarCockpit({ initialData, session }) {
         </header>
 
         {/* Cockpit Content Area */}
-        <div className="flex-1 flex overflow-hidden">
+        <div className="flex-1 flex flex-col lg:flex-row overflow-hidden">
           {/* Timeline Center */}
           <section className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-white/50">
             <div className="max-w-4xl mx-auto space-y-6">
@@ -771,7 +771,7 @@ export default function SignStarCockpit({ initialData, session }) {
           )}
 
           {/* Contextual Sidebar (Right) */}
-          <aside className={`w-96 bg-white border-l border-slate-200 overflow-y-auto p-8 transition-all duration-300 ${showSidebar ? '' : 'w-0 p-0 hidden'}`}>
+          <aside className={`w-full lg:w-96 bg-white border-t lg:border-t-0 lg:border-l border-slate-200 overflow-y-auto p-4 lg:p-8 transition-all duration-300 ${showSidebar ? '' : 'lg:w-0 lg:p-0 hidden lg:block'}`}>
             {selectedEvent ? (
               <div className="space-y-8 animate-in fade-in slide-in-from-right-4">
                 <div className="flex justify-between items-start">

@@ -59,4 +59,42 @@ body {
   animation: fade-in 0.4s ease-out forwards;
 }
 
+/* --- レスポンシブ対応の追加 --- */
+
+@media (max-width: 768px) {
+  /* スマホではスクロールを許可 */
+  body {
+    overflow: auto !important;
+  }
+
+  /* サイドバーがあるレイアウトを縦並びに強制 */
+  .flex-row {
+    flex-direction: column !important;
+  }
+
+  /* 固定幅の要素を100%に */
+  .w-64 {
+    width: 100% !important;
+    height: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--card-border) !important;
+  }
+
+  /* グリッドを1列に */
+  .grid-cols-2, .grid-cols-3, .grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* 上部ヘッダーの要素を折り返し */
+  .header-actions {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  /* カレンダーの高さ調整 */
+  .fc-view-harness {
+    height: 500px !important;
+  }
+}
+
 
