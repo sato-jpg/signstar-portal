@@ -6,7 +6,7 @@ import { signIn, signOut } from "next-auth/react";
 import { 
   LayoutDashboard, Truck, Mail, ExternalLink, Bell, User, 
   ChevronRight, Car, Calendar, LogOut, LogIn, Clock, MapPin, 
-  CheckCircle2, Info, ChevronDown, Filter, Settings
+  CheckCircle2, Info, ChevronDown, Filter, Settings, Wrench, CircleParking
 } from "lucide-react";
 import WeatherWidget from "./WeatherWidget";
 import CurrentDate from "./CurrentDate";
@@ -403,9 +403,9 @@ export default function SignStarCockpit({ initialData, session }) {
         </div>
         
         <nav className="flex lg:flex-col px-4 items-center lg:items-stretch lg:space-y-2 gap-2 lg:gap-0 h-auto overflow-x-auto lg:overflow-visible">
-          <NavItem icon={<LayoutDashboard size={20} />} label="スケジュール" active={activeCategory === 'all'} onClick={() => setActiveCategory('all')} />
-          <NavItem icon={<Truck size={20} />} label="現場" active={activeCategory === 'general'} onClick={() => setActiveCategory('general')} />
-          <NavItem icon={<MapPin size={20} />} label="パーキング" active={activeCategory === 'parking'} onClick={() => setActiveCategory('parking')} />
+          <NavItem icon={<Calendar size={20} />} label="スケジュール" active={activeCategory === 'all'} onClick={() => setActiveCategory('all')} />
+          <NavItem icon={<Wrench size={20} />} label="現場" active={activeCategory === 'general'} onClick={() => setActiveCategory('general')} />
+          <NavItem icon={<CircleParking size={20} />} label="パーキング" active={activeCategory === 'parking'} onClick={() => setActiveCategory('parking')} />
           <NavItem icon={<Car size={20} />} label="車両状況" active={activeCategory === 'vehicles'} onClick={() => setActiveCategory('vehicles')} />
           <NavItem icon={<Mail size={20} />} label="メッセージ" badge={emails.length} active={activeCategory === 'messages'} onClick={() => setActiveCategory('messages')} />
         </nav>
@@ -565,7 +565,7 @@ export default function SignStarCockpit({ initialData, session }) {
                       <>
                         <div className="flex justify-between items-center mb-4">
                           <h3 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
-                            <MapPin className="text-[#d71d1d]" /> パーキング案件一覧
+                            <CircleParking className="text-[#d71d1d]" /> パーキング案件一覧
                           </h3>
                           <span className="text-xs font-bold text-slate-400">本日 {filteredParking.length} 件</span>
                         </div>
@@ -598,7 +598,7 @@ export default function SignStarCockpit({ initialData, session }) {
                           ))}
                           {filteredParking.length === 0 && (
                             <div className="col-span-full py-20 text-center space-y-4 opacity-50">
-                              <MapPin size={48} className="mx-auto text-slate-200" />
+                              <CircleParking size={48} className="mx-auto text-slate-200" />
                               <p className="font-bold text-slate-400">本日のパーキング予定はありません</p>
                             </div>
                           )}
@@ -862,7 +862,7 @@ export default function SignStarCockpit({ initialData, session }) {
                     <div className="relative z-10 space-y-4">
                       <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-2xl bg-white shadow-sm flex items-center justify-center text-[#d71d1d]">
-                          {selectedEvent.type === 'general' ? <Truck size={20} /> : <Calendar size={20} />}
+                          {selectedEvent.type === 'general' ? <Wrench size={20} /> : (selectedEvent.type === 'project' ? <CircleParking size={20} /> : <Calendar size={20} />)}
                         </div>
                         <div>
                           <p className="text-xs font-black text-slate-400 uppercase tracking-widest leading-none">Status</p>
