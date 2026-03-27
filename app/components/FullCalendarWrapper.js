@@ -91,17 +91,17 @@ export default function FullCalendarWrapper({
             backgroundColor: item.type === 'calendar' ? (item.calendarColor || '#3b82f6') : (item.type === 'general' ? '#d71d1d' : (item.type === 'project' ? '#10b981' : '#888888')),
             borderColor: 'transparent',
             editable: item.type === 'calendar',
-            allDay: Math.abs(item.time.getTime()) === 0,
+            allDay: false,
             extendedProps: { ...item }
           }];
         })}
         editable={true}
         droppable={true}
         height="100%"
+        allDaySlot={false}
         slotMinTime="05:00:00"
         slotMaxTime="23:00:00"
         headerToolbar={false}
-        allDayText="優先"
         eventDrop={handleEventDrop}
         eventResize={handleEventDrop}
         eventClick={(info) => {
