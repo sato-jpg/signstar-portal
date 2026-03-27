@@ -303,11 +303,11 @@ export default function SignStarCockpit({ initialData, session }) {
     // ... (projects and vehicles remain similar but check visibility if user-associated)
     // 既存の projects, vehicles も必要に応じて USER_MAPPING を見るように調整可能だが一旦そのままでも可
     
-    // パーキング案件
-    if (activeCategory === "all" || activeCategory === "parking") {
+    // パーキング案件：専用メニュー(Parking)で見るため'all'からは除外
+    if (activeCategory === "parking") {
       projects.forEach(p => {
         const itemDate = p.fullDate?.split('T')[0];
-        if (activeCategory === "parking" || itemDate === targetDateStr) {
+        if (itemDate === targetDateStr) {
           items.push({
             id: `park-${p.id}`,
             type: "project",
@@ -316,15 +316,14 @@ export default function SignStarCockpit({ initialData, session }) {
             subtitle: p.client,
             status: p.progress,
             action: p.action || "-",
-            isLowPriority: activeCategory === "all",
             raw: p
           });
         }
       });
     }
 
-    // 車両
-    if (activeCategory === "all") {
+    // 車両：専用メニュー(Vehicles)で見るため'all'からは除外
+    if (activeCategory === "vehicles") {
       vehicles.forEach(v => {
         if (v.fullDate === targetDateStr) {
           const [h, m] = (v.time || "00:00").split(":");
