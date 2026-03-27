@@ -694,7 +694,7 @@ export default function SignStarCockpit({ initialData, session }) {
               ) : (
                 <FullCalendarWrapper 
                   selectedDate={selectedDate}
-                  events={calendarEvents}
+                  activeCategory={activeCategory}
                   hiddenMemberNames={hiddenMemberNames}
                   dynamicUserMapping={dynamicUserMapping}
                   timeline={timeline}

@@ -10,6 +10,7 @@ import interactionPlugin from '@fullcalendar/interaction';
 
 export default function FullCalendarWrapper({ 
   selectedDate, 
+  activeCategory,
   dynamicUserMapping, 
   hiddenMemberNames, 
   timeline, 
@@ -25,31 +26,37 @@ export default function FullCalendarWrapper({
   }, [selectedDate]);
 
   // 1. 全リソースのリスト。
-  // dynamicUserMappingに加えて、現在のタイムラインに含まれるすべてのユーザー/ラベルをリソースとして追加する。
-  // これにより、Notionプロジェクトなどの「本来リソースにいない項目」もカレンダー上に表示されるようになる。
+  // activeCategory（表示モード）に応じて、表示する「列（リソース）」を限定する。
   const allResources = useMemo(() => {
-    const resSet = new Set(Object.values(dynamicUserMapping));
-    timeline.forEach(item => {
-      // ユーザーが明記されている場合
-      if (item.users) {
-        item.users.forEach(u => resSet.add(u));
-      }
-      // サブタイトル（案件名や顧客名）をリソースとして扱う（Parking用）
-      if (item.subtitle && item.type === 'project') {
-        resSet.add(item.subtitle);
-      }
-      // 現場案件の固定リソース
-      if (item.type === 'general') {
-        resSet.add("現場");
-        resSet.add("お兄さん");
-      }
-    });
+    const resSet = new Set();
 
-    // どのリソースにも属さない「未割当」などを追加したくない場合はここでフィルタ
+    // モードに応じた「必ず表示する」基本情報の決定
+    if (activeCategory === 'general') {
+      // 現場ページ（一般案件）の場合は、現場と、お兄さんの2名のみ
+      resSet.add("現場");
+      resSet.add("お兄さん");
+    } else if (activeCategory === 'parking') {
+      // パーキングモードの場合は、タイムライン内の顧客名など（空でも良いが必要に応じて）
+      timeline.forEach(item => {
+        if (item.subtitle && item.type === 'project') resSet.add(item.subtitle);
+      });
+    } else {
+      // 「すべて」またはその他の場合は、全メンバー + 案件
+      Object.values(dynamicUserMapping).forEach(name => resSet.add(name));
+      timeline.forEach(item => {
+        if (item.users) item.users.forEach(u => resSet.add(u));
+        if (item.subtitle && item.type === 'project') resSet.add(item.subtitle);
+        if (item.type === 'general') {
+          resSet.add("現場");
+          resSet.add("お兄さん");
+        }
+      });
+    }
+
     return Array.from(resSet)
       .filter(name => name && !hiddenMemberNames.includes(name))
       .map(name => ({ id: name, title: name }));
-  }, [dynamicUserMapping, timeline, hiddenMemberNames]);
+  }, [dynamicUserMapping, timeline, hiddenMemberNames, activeCategory]);
 
   return (
     <div className="bg-white border border-slate-200 rounded-3xl shadow-xl overflow-hidden flex flex-col h-[800px] p-4 text-sm relative z-0">
@@ -61,7 +68,7 @@ export default function FullCalendarWrapper({
         initialDate={selectedDate || new Date()}
         resources={allResources}
         events={timeline.flatMap(item => {
-          // リソースIDの決定
+          // リソースIDの決定。アイテムがどの列に表示されるか。
           let resourceIds = [];
           if (item.type === 'general') {
             resourceIds = ["現場", "お兄さん"];
@@ -71,11 +78,13 @@ export default function FullCalendarWrapper({
             resourceIds = potentialResources.filter(name => !hiddenMemberNames.includes(name));
           }
           
-          if (resourceIds.length === 0) return [];
+          // 現在表示中のリソース（allResources）に含まれるもののみフィルタリング
+          const activeResourceIds = resourceIds.filter(id => allResources.some(r => r.id === id));
+          if (activeResourceIds.length === 0) return [];
 
           return [{
             id: item.id,
-            resourceIds: resourceIds,
+            resourceIds: activeResourceIds,
             title: item.title,
             start: item.time,
             end: item.type === 'calendar' ? (item.raw?.end?.dateTime || item.raw?.end?.date || new Date(item.time.getTime() + 60*60*1000)) : new Date(item.time.getTime() + 60*60*1000),
