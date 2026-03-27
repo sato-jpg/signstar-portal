@@ -31,7 +31,7 @@ const USER_MAPPING = {
 };
 
 export default function SignStarCockpit({ initialData, session }) {
-  const { emails, projects, vehicles, calendarEvents, calendarError, generalProjects } = initialData;
+  const { emails, emailError, projects, vehicles, calendarEvents, calendarError, generalProjects } = initialData;
 
   // カレンダーIDと表示名のマッピングを動的に拡張 (重複を排除するために名前をキーにする)
   const dynamicUserMapping = useMemo(() => {
@@ -69,19 +69,7 @@ export default function SignStarCockpit({ initialData, session }) {
     return mapping;
   }, [calendarEvents, session]);
 
-  const [visibleMemberNames, setVisibleMemberNames] = useState(() => {
-    const initialNames = new Set(Object.values(USER_MAPPING).map(v => v.trim()));
-    if (session?.user?.name) initialNames.add(session.user.name.trim());
-    return initialNames;
-  });
-
-  // 取得したカレンダー名を自動で追加
-  useMemo(() => {
-    calendarEvents.forEach(e => {
-      const name = (dynamicUserMapping[e.calendarId] || e.calendarSummary || e.calendarId)?.trim();
-      if (name) visibleMemberNames.add(name);
-    });
-  }, [calendarEvents, dynamicUserMapping, visibleMemberNames]);
+  const [hiddenMemberNames, setHiddenMemberNames] = useState([]);
   const [viewMode, setViewMode] = useState("director"); // director or production
   const [activeCategory, setActiveCategory] = useState("all"); // all, general, parking
   const [selectedEvent, setSelectedEvent] = useState(null);
@@ -237,7 +225,7 @@ export default function SignStarCockpit({ initialData, session }) {
   // 1. 全ソースのデータを一つのタイムラインに統合・ソート・優先順位付け
   const timeline = useMemo(() => {
     let items = [];
-    const targetDateStr = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo' }).format(selectedDate);
+    const targetDateStr = new Intl.DateTimeFormat('sv-SE', { timeZone: 'Asia/Tokyo' }).format(selectedDate); // YYYY-MM-DD
 
     // 一般案件 (最優先: トップ & 太字)
     // 一般案件は「今日」に限らず進行中のものを常に出す方針（監督の要望）
@@ -269,14 +257,13 @@ export default function SignStarCockpit({ initialData, session }) {
           // ユーザーごとの表示名解決
           let userLabel = (dynamicUserMapping[e.calendarId] || e.calendarSummary || e.calendarId)?.trim();
           
-          // 表示名が解決できなかった場合、USER_MAPPING の値の中にあるか探す
           if (!userLabel || userLabel.includes('@')) {
               const fallbackName = Object.values(dynamicUserMapping).find(name => name === e.calendarSummary?.trim());
               if (fallbackName) userLabel = fallbackName;
           }
 
-          // 表示非表示フィルタ (名前ベース)
-          if (!visibleMemberNames.has(userLabel)) return;
+          // 非表示フィルタ (名前ベース)
+          if (hiddenMemberNames.includes(userLabel)) return;
 
           const timeKey = new Date(e.start).getTime();
           const titleKey = e.summary.replace(/[ \u3000]/g, ""); // スペースを消して比較
@@ -364,14 +351,15 @@ export default function SignStarCockpit({ initialData, session }) {
       if (!a.isLowPriority && b.isLowPriority) return -1;
       return a.time - b.time;
     });
-  }, [calendarEvents, projects, vehicles, generalProjects, selectedDate, activeCategory, visibleMemberNames, dynamicUserMapping]);
+  }, [calendarEvents, projects, vehicles, generalProjects, selectedDate, activeCategory, hiddenMemberNames, dynamicUserMapping]);
 
   const toggleCalendarVisibility = (name) => {
-    setVisibleMemberNames(prev => {
-      const next = new Set(prev);
-      if (next.has(name)) next.delete(name);
-      else next.add(name);
-      return next;
+    setHiddenMemberNames(prev => {
+      if (prev.includes(name)) {
+        return prev.filter(n => n !== name);
+      } else {
+        return [...prev, name];
+      }
     });
   };
 
@@ -444,6 +432,10 @@ export default function SignStarCockpit({ initialData, session }) {
           <div className="flex items-center justify-between w-full md:w-auto gap-4">
             <h1 className="text-xl font-black text-slate-800 tracking-tight flex items-center gap-2">
               SignStar <span className="text-[#d71d1d]">Cockpit</span>
+              <span className="text-[10px] bg-emerald-100 text-emerald-600 px-2 py-0.5 rounded-full">v1.2 Fix</span>
+              <span className="hidden md:flex gap-1 text-[8px] font-bold text-slate-400">
+                (M:{emails.length} P:{projects.length} G:{generalProjects.length} C:{calendarEvents.length})
+              </span>
             </h1>
             <div className="h-4 w-[1px] bg-slate-200"></div>
             <CurrentDate />
@@ -509,7 +501,12 @@ export default function SignStarCockpit({ initialData, session }) {
                     タイムライン
                     {calendarError && (
                       <span className="text-[10px] font-black bg-red-50 text-red-500 px-2 py-0.5 rounded-lg animate-pulse border border-red-100 uppercase tracking-widest">
-                        Auth Error: Re-login required
+                        Calendar Error: {calendarError}
+                      </span>
+                    )}
+                    {emailError && (
+                      <span className="text-[10px] font-black bg-orange-50 text-orange-500 px-2 py-0.5 rounded-lg border border-orange-100 uppercase tracking-widest">
+                        Email Error: {emailError}
                       </span>
                     )}
                   </h2>
@@ -553,7 +550,7 @@ export default function SignStarCockpit({ initialData, session }) {
                       key={name}
                       onClick={() => toggleCalendarVisibility(name)}
                       className={`px-3 py-1 rounded-full text-[10px] font-black transition-all border ${
-                        visibleMemberNames.has(name)
+                        !hiddenMemberNames.includes(name)
                         ? "bg-[#d71d1d] text-white border-transparent shadow-sm"
                         : "bg-white text-slate-400 border-slate-200 hover:border-slate-300"
                       }`}
@@ -695,14 +692,11 @@ export default function SignStarCockpit({ initialData, session }) {
                   </div>
                 </div>
               ) : (
-                <FullCalendarWrapper
+                <FullCalendarWrapper 
                   selectedDate={selectedDate}
-                  dynamicUserMapping={
-                    activeCategory === "general"
-                    ? Object.fromEntries(Object.entries(dynamicUserMapping).filter(([id]) => id === "hironao.yano@signstar.network" || id === "現場"))
-                    : dynamicUserMapping
-                  }
-                  visibleMemberNames={visibleMemberNames}
+                  events={calendarEvents}
+                  hiddenMemberNames={hiddenMemberNames}
+                  dynamicUserMapping={dynamicUserMapping}
                   timeline={timeline}
                   handleEventDrop={handleEventDrop}
                   setSelectedEvent={setSelectedEvent}

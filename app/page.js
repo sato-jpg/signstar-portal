@@ -15,6 +15,11 @@ export const revalidate = 0;
 import SignStarCockpit from "@/app/components/SignStarCockpit";
 
 export default async function Home() {
+  console.log("[SSR] ENV Check:", {
+    hasMailUser: !!process.env.MAIL_USER,
+    hasNotionToken: !!process.env.NOTION_TOKEN,
+    hasGoogleId: !!process.env.AUTH_GOOGLE_ID,
+  });
   const session = await auth();
   // セッションエラー（トークンリフレッシュ失敗など）のチェック
   const isAuthError = session?.error === "RefreshAccessTokenError";
@@ -24,7 +29,7 @@ export default async function Home() {
     getLatestEmailsIMAP({
       user: process.env.MAIL_USER,
       password: process.env.MAIL_PASSWORD,
-      host: process.env.MAIL_HOST || "sign-star.sakura.ne.jp",
+      host: process.env.MAIL_HOST || "nwapi001.sakura.ne.jp",
     }).catch((e) => {
       console.error("[IMAP] Fetch Failed:", e.message);
       return { error: "IMAP Error", data: [] };
@@ -49,15 +54,23 @@ export default async function Home() {
       return { error: "Notion General Error", data: [] };
     })
   ]);
+  
+  console.log(`[SSR] Page Load Data Check:`, {
+    hasEmail: Array.isArray(emailRes) ? emailRes.length : 0,
+    hasNotion: notionRes?.data?.length || 0,
+    hasCalendar: calendarRes?.data?.length || 0,
+    hasGeneral: generalRes?.data?.length || 0,
+  });
 
-  const initialData = {
-    emails: Array.isArray(emailRes) ? emailRes : [],
-    projects: notionRes?.data || [],
-    vehicles: vehicleRes?.data || [],
-    calendarEvents: calendarRes?.data || [],
-    calendarError: calendarRes?.error || null,
-    generalProjects: generalRes?.data || [],
-  };
+    const initialData = {
+      emails: Array.isArray(emailRes) ? emailRes : [],
+      emailError: emailRes?.error || null,
+      projects: notionRes?.data || [],
+      vehicles: vehicleRes?.data || [],
+      calendarEvents: calendarRes?.data || [],
+      calendarError: calendarRes?.error || null,
+      generalProjects: generalRes?.data || [],
+    };
 
   return <SignStarCockpit initialData={initialData} session={session} />;
 }
