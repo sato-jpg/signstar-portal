@@ -3,7 +3,8 @@
 import { Client } from "@notionhq/client";
 import { google } from "googleapis";
 import { auth } from "@/auth";
-import { fetchEmailBodyIMAP, sendEmailSMTP } from "@/lib/mail-imap";
+import { fetchEmailBodyGmail } from "@/lib/mail-gmail";
+import { sendEmailSMTP } from "@/lib/mail-imap";
 
 const notion = new Client({ auth: process.env.NOTION_TOKEN });
 
@@ -215,11 +216,7 @@ export async function fetchEmailBodyAction(uid) {
   if (!session) return { success: false, error: "Unauthorized" };
 
   try {
-    const body = await fetchEmailBodyIMAP(uid, {
-      user: process.env.MAIL_USER,
-      password: process.env.MAIL_PASSWORD,
-      host: process.env.MAIL_HOST || "sign-star.sakura.ne.jp",
-    });
+    const body = await fetchEmailBodyGmail(uid, session.accessToken);
     return { success: true, body };
   } catch (e) {
     console.error("fetchEmailBodyAction Error:", e);
