@@ -377,16 +377,12 @@ export default function SignStarCockpit({ initialData, session }) {
     });
   }, [emails, selectedEvent]);
 
-  const toggleMode = () => {
-    setViewMode(prev => prev === "director" ? "production" : "director");
-  };
-
   return (
-    <div className={`flex flex-col lg:flex-row h-screen bg-[#F4F7F9] text-slate-700 font-sans transition-all duration-500 pb-16 lg:pb-0 ${viewMode === 'director' ? 'director-theme' : 'production-theme'}`}>
+    <div className={`flex flex-col lg:flex-row h-screen bg-[#F4F7F9] text-slate-700 font-sans transition-all duration-500 pb-16 lg:pb-0`}>
       {/* Sidebar Navigation */}
       <aside className="hidden lg:flex w-full lg:w-64 bg-white border-b lg:border-b-0 lg:border-r border-slate-200 flex-col shrink-0 overflow-x-auto lg:overflow-visible">
-        <div className="p-4 lg:p-6 flex items-center justify-between lg:justify-start lg:block w-full">
-          <Image src="/logo.png" alt="Logo" width={160} height={40} className="object-contain" />
+        <div className="p-4 lg:p-8 flex flex-col items-center justify-center w-full">
+          <Image src="/logo.png" alt="Logo" width={180} height={45} className="object-contain mx-auto" />
         </div>
         
         <nav className="flex lg:flex-col px-4 items-center lg:items-stretch lg:space-y-2 gap-2 lg:gap-0 h-auto overflow-x-auto lg:overflow-visible">
@@ -397,21 +393,8 @@ export default function SignStarCockpit({ initialData, session }) {
           <NavItem icon={<Mail size={20} />} label="メッセージ" badge={emails.length} active={activeCategory === 'messages'} onClick={() => setActiveCategory('messages')} />
         </nav>
 
-        <div className="p-4 mt-auto">
-          <div className="bg-slate-50 rounded-2xl p-4 border border-slate-100 hidden lg:block">
-            <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Operation Mode</p>
-            <button 
-              onClick={toggleMode}
-              className={`w-full py-2 px-3 rounded-xl text-xs font-bold transition-all flex items-center justify-center gap-2 ${
-                viewMode === "director" 
-                ? "bg-[#d71d1d] text-white shadow-lg shadow-[#d71d1d]/20" 
-                : "bg-emerald-600 text-white shadow-lg shadow-emerald-500/20"
-              }`}
-            >
-              <Settings size={14} className={viewMode === "director" ? "animate-spin-slow" : "animate-pulse"} />
-              {viewMode === "director" ? "監督・デザイン" : "現場・制作"}
-            </button>
-          </div>
+        <div className="mt-auto p-4 flex flex-col items-center justify-center text-[10px] text-slate-300 font-bold uppercase tracking-widest">
+          SignStar Portal v1.2
         </div>
       </aside>
       
@@ -639,19 +622,32 @@ export default function SignStarCockpit({ initialData, session }) {
                         </tr>
                       </thead>
                       <tbody className="divide-y divide-slate-50">
-                        {vehicles.map(v => (
-                          <tr key={v.id} className="hover:bg-slate-50/50 transition-colors cursor-pointer group">
-                            <td className="px-6 py-4 font-black text-slate-800">{v.vehicle}</td>
-                            <td className="px-6 py-4 text-sm font-bold text-slate-600">{v.user}</td>
-                            <td className="px-6 py-4">
-                              <p className="text-sm font-bold text-slate-800">{v.project}</p>
-                              <p className="text-[10px] font-bold text-slate-400">{v.purpose}</p>
-                            </td>
-                            <td className="px-6 py-4">
-                              <span className="px-3 py-1 bg-slate-100 rounded-full text-[10px] font-black">{v.time}</span>
-                            </td>
-                          </tr>
-                        ))}
+                        {(() => {
+                          const targetDateStr = selectedDate.toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
+                          const filteredVehicles = vehicles.filter(v => v.fullDate === targetDateStr);
+                          
+                          if (filteredVehicles.length === 0) {
+                            return (
+                              <tr>
+                                <td colSpan="4" className="px-6 py-20 text-center text-slate-400 font-bold">本日の車両稼働予定はありません</td>
+                              </tr>
+                            );
+                          }
+
+                          return filteredVehicles.map(v => (
+                            <tr key={v.id} className="hover:bg-slate-50/50 transition-colors cursor-pointer group">
+                              <td className="px-6 py-4 font-black text-slate-800">{v.vehicle}</td>
+                              <td className="px-6 py-4 text-sm font-bold text-slate-600">{v.user}</td>
+                              <td className="px-6 py-4">
+                                <p className="text-sm font-bold text-slate-800">{v.project}</p>
+                                <p className="text-[10px] font-bold text-slate-400">{v.purpose}</p>
+                              </td>
+                              <td className="px-6 py-4">
+                                <span className="px-3 py-1 bg-slate-100 rounded-full text-[10px] font-black">{v.time}</span>
+                              </td>
+                            </tr>
+                          ));
+                        })()}
                       </tbody>
                     </table>
                   </div>
