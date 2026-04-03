@@ -27,6 +27,7 @@ const USER_MAPPING = {
   "kato@signstar.network": "加藤",
   "yanohara@signstar.network": "社長",
   "hironao.yano@signstar.network": "お兄さん",
+  "hasegawa@signstar.network": "長谷川さん",
   "現場": "現場"
 };
 
