@@ -6,6 +6,8 @@ export const metadata = {
 };
 
 const exhibitions = [
+  { name: "イベント総合EXPO 2026", date: "2026年1月21日〜23日", location: "幕張メッセ", category: "イベントインフラ", point: "【終了済み】次回（2027年）に向けての営業リスト化用", recommendation: "ー" },
+  { name: "ライブ・エンターテイメント EXPO 2026", date: "2026年1月21日〜23日", location: "幕張メッセ", category: "イベントインフラ", point: "【終了済み】次回（2027年）に向けての営業リスト化用", recommendation: "ー" },
   { name: "SPORTEC 2026", date: "2026年7月8日〜10日", location: "東京ビッグサイト", category: "スポーツ・フィットネス", point: "大型のフィットネスマシンや特設ステージが多く、堅牢なトラスと空間演出が求められます。", recommendation: "〇" },
   { name: "国際物流総合展 2026", date: "2026年9月8日〜11日", location: "東京ビッグサイト", category: "物流・マテハン", point: "巨大な物流システムやマテハン機器を展示するため、天井ギリギリまでの巨大ブースやトラスが乱立します。", recommendation: "〇" },
   { name: "東京ゲームショウ 2026 (TGS)", date: "2026年9月17日〜21日", location: "幕張メッセ", category: "ゲーム・エンタメ", point: "トラスとLEDビジョンの大本命！各社が巨大モニターや派手な照明を吊るすため、まさに御社の強みが活きる戦場です。", recommendation: "◎" },
@@ -15,7 +17,7 @@ const exhibitions = [
   { name: "Inter BEE 2026", date: "2026年11月18日〜20日", location: "幕張メッセ", category: "音響・映像・通信", point: "映像・照明のプロが集まる展示会。ここで使われるブース施工自体が「作品」として見られます。LEDビジョンのアピールには最高の舞台です。", recommendation: "◎" },
   { name: "JAPAN BUILD 東京 2026", date: "2026年12月2日〜4日", location: "東京ビッグサイト", category: "建築・建設", point: "建築の先端技術展。大型構造物の展示も多いです。", recommendation: "〇" },
   { name: "東京オートサロン 2027", date: "2027年1月15日〜17日", location: "幕張メッセ", category: "車・カスタムカー", point: "オートメッセと同様、カスタムカーと派手な演出の祭典。トラスと照明、LEDビジョンの需要は国内トップクラスです。", recommendation: "◎" },
-  { name: "第14回 イベント総合EXPO 2027", date: "2027年1月27日〜29日", location: "幕張メッセ", category: "イベントインフラ", point: "展示会業界関係者が集まるイベント。ここでサインスターさん自身が出展し、圧倒的なトラス組やLEDビジョンを見せつけるのもアリかもしれません！", recommendation: "◎" },
+  { name: "第14回 LIVeNT 2027 (イベント総合 & ライブ・エンターテイメントEXPO)", date: "2027年1月27日〜29日", location: "幕張メッセ", category: "イベントインフラ", point: "展示会業界関係者が集まるイベント。ここでサインスターさん自身が出展し、圧倒的なトラス組やLEDビジョンを見せつけるのもアリかもしれません！", recommendation: "◎" },
   { name: "大阪オートメッセ 2027", date: "2027年2月上旬〜中旬", location: "インテックス大阪", category: "車・カスタムカー", point: "ホームグラウンドですね！", recommendation: "◎" },
   { name: "AnimeJapan 2027", date: "2027年3月27日〜28日", location: "インテックス大阪", category: "アニメ・エンタメ", point: "アニメの特設ステージで巨大トラスとLEDビジョンが必須です。今回は大阪開催なので、関西圏の施工業者には大チャンスです。", recommendation: "◎" }
 ];
